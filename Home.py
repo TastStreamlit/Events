@@ -105,21 +105,30 @@ state = calendar(
     key=st.session_state["Calendar"],
 )
 
-@st.dialog("Miet")
-def addEvent():
+#@st.dialog("Miet")
+def addEvent(selectionMethod):
     new_mietable = st.multiselect("What to miet", mietables)
     #st.write(new_mietable)
+
+    if selectionMethod == "click":
+        all_day = True
+        start_date = state["dateClick"]["date"]
+        end_date = state["dateClick"]["date"]
+    elif selectionMethod == "select":
+        all_day = True
+        start_date = state["select"]["start"]
+        end_date = state["select"]["end"]
     
     if st.button("Miet!"):
         i = 0
         for new_m in new_mietable:
             new_event_desc = {
-                "allDay": True,     #all day or certain hours
+                "allDay": all_day,     #all day or certain hours
                 "title": new_mietable[i],
                 "color": mietables[new_m],
                 "location": "Bern",
-                "start": (state["dateClick"]["date"]),
-                "end": (state["dateClick"]["date"]),
+                "start": start_date,
+                "end": end_date,
                 "resourceId": "a"
             }
 
@@ -130,7 +139,22 @@ def addEvent():
         st.rerun()
 
 if state["callback"] == "dateClick":
-    addEvent()
+    addEvent("click")
+
+elif state["callback"] == "select":
+    addEvent("select")
+
+with st.expander('About Equipment', icon='🎧'): #🎵🎶🔈🔉🔊
+    st.write("Boxe desc")
+    st.image(
+            "https://cdn.pixabay.com/photo/2019/11/13/10/17/monkey-banana-4623184_640.jpg",
+            caption = "Boxe Image",
+            width = 400,
+        )
+    st.divider()
+
+    st.write("Rouchmaschine desc")
+    st.divider()
 
 with st.expander('About Us', icon='🌍'):
     st.write("Uber uns")
