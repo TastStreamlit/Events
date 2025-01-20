@@ -9,26 +9,51 @@ st.set_page_config(
     initial_sidebar_state='collapsed',
 )
 
+#Init session state
+if not st.session_state.get("Calendar", False):
+    st.session_state["Calendar"] = str(uuid.uuid4())
+if not st.session_state.get("Events", False):
+    st.session_state["Events"] = [{}]
 
-colors = ["blue", "red", "green"]
+# Light/Dark mode toggle button session state
+ms = st.session_state
+if 'themes' not in ms: 
+    ms.themes = {'currentTheme': 'dark',        
+        'light': {'theme.base': 'dark',
+            #'theme.backgroundColor': 'black',
+            #'theme.primaryColor': '#c98bdb',
+            #'theme.secondaryBackgroundColor': '#5591f5',
+            #'theme.textColor': 'white',
+            'buttonFace': 'Dark 🌜'},  #🌑
 
-#events = [
-#    {
-#        "title": "Event 1",
-#        "color": colors[2],
-#        "location": "LA",
-#        "start": "2024-08-30",
-#        "end": "2024-09-02",
-#        "resourceId": "b",
-#    }
-#]
+        'dark':  {'theme.base': 'light',
+            #'theme.backgroundColor': 'white',
+            #'theme.primaryColor': '#5591f5',
+            #'theme.secondaryBackgroundColor': '#82E1D7',
+            #'theme.textColor': '#0a1464',
+            'buttonFace': 'Light 🌞'}, #🌕
+        }
+    
+# Change theme from/to light/dark
+def changeTheme():
+    previousTheme = ms.themes['currentTheme']
+    themeDict = ms.themes['light'] if ms.themes['currentTheme'] == 'light' else ms.themes['dark']
+    for key, val in themeDict.items(): 
+        if key.startswith('theme'): st._config.set_option(key, val)
 
-mietables = ["Boxe", "Rouchmaschine"]
+    if previousTheme == 'dark': ms.themes['currentTheme'] = 'light'
+    elif previousTheme == 'light': ms.themes['currentTheme'] = 'dark'
 
-mietablesColors = [
-    {mietables[0]: "red"},
-    {mietables[1]: "blue"},
-]
+with st.sidebar:
+    buttonFace = ms.themes['light']['buttonFace'] if ms.themes['currentTheme'] == 'light' else ms.themes['dark']['buttonFace']
+    st.button(buttonFace, on_click=changeTheme, help='🌓')
+
+#Vars
+mietables = {
+    "Boxe": "blue",
+    "Rouchmaschine": "red",
+    "Rouchmaschine 2": "green"
+}
 
 events = []
 
@@ -55,11 +80,8 @@ calendar_options = {
     "initialDate": "2024-08-01",
     "initialView": "dayGridMonth",
 }
-if not st.session_state.get("Calendar", False):
-    st.session_state["Calendar"] = str(uuid.uuid4())
-if not st.session_state.get("Events", False):
-    st.session_state["Events"] = [{}]
 
+#Calendar
 state = calendar(
     events=st.session_state["Events"],
     options=calendar_options,
@@ -80,34 +102,26 @@ state = calendar(
     key=st.session_state["Calendar"],
 )
 
-event_to_add = {
-    "title": "Event 7",
-    "color": "#FF4B4B",
-    "location": "SF",
-    "start": "2024-09-01",
-    "end": "2024-09-07",
-    "resourceId": "a"
-}
-
 @st.dialog("Miet")
 def addEvent():
-    new_event = st.multiselect("What to miet", mietables)
-    #st.write(new_event)
-
-
+    new_mietable = st.multiselect("What to miet", mietables)
+    #st.write(new_mietable)
+    
     if st.button("Miet!"):
-        #st.write("new event selected")
+        i = 0
+        for new_m in new_mietable:
+            new_event_desc = {
+                "allDay": True,     #all day or certain hours
+                "title": new_mietable[i],
+                "color": mietables[new_m],
+                "location": "Bern",
+                "start": (state["dateClick"]["date"]),
+                "end": (state["dateClick"]["date"]),
+                "resourceId": "a"
+            }
 
-        new_event_desc = {
-            "title": new_event,
-            "color": "#FF4B4B",
-            "location": "SF",
-            "start": (state["dateClick"]["date"]),
-            "end": (state["dateClick"]["date"]),
-            "resourceId": "a"
-        }
-
-        st.session_state["Events"].append(new_event_desc)
+            st.session_state["Events"].append(new_event_desc)
+            i += 1
 
         st.session_state["Calendar"] = str(uuid.uuid4())
         st.rerun()
@@ -115,33 +129,14 @@ def addEvent():
 if state["callback"] == "dateClick":
     addEvent()
 
-#if user clicks on a date
-#if state["callback"] == "dateClick":
-#    #st.write(state["dateClick"]["date"])
-#
-#    new_event = st.multiselect("What to miet", mietables)
-#    st.write(new_event)
-#
-#    if new_event != []:
-#        st.write("new event selected")
-#
-#        new_event_desc = {
-#            "title": new_event,
-#            "color": "#FF4B4B",
-#            "location": "SF",
-#            "start": (state["dateClick"]["date"]),
-#            "end": (state["dateClick"]["date"]),
-#            "resourceId": "a"
-#        }
-#
-#        st.session_state["Events"].append(new_event_desc)
-#
-#        st.session_state["Calendar"] = str(uuid.uuid4())
-#        st.rerun()
+with st.expander('About Us', icon='🌍'):
+    st.write("Uber uns")
 
-
-#To DEBUG
+#DEBUG
 with st.sidebar:
+    st.divider()
+    st.write("DEBUG")
+
     st.write("State")
     st.write(state)
 
