@@ -1,6 +1,15 @@
 import streamlit as st
 from streamlit_calendar import calendar
 import uuid
+
+st.set_page_config(
+    page_title='Home',
+    page_icon='🏠',
+    layout='centered',
+    initial_sidebar_state='collapsed',
+)
+
+
 colors = ["blue", "red", "green"]
 
 #events = [
