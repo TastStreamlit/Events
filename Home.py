@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_calendar import calendar
+import datetime
 import uuid
 
 st.set_page_config(
@@ -49,6 +50,8 @@ with st.sidebar:
     st.button(buttonFace, on_click=changeTheme, help='🌓')
 
 #Vars
+today = str(datetime.date.today())
+
 mietables = {
     "Boxe": "blue",
     "Rouchmaschine": "red",
@@ -77,7 +80,7 @@ calendar_options = {
         "center": "title",
         "right": "dayGridDay,dayGridWeek,dayGridMonth",
     },
-    "initialDate": "2024-08-01",
+    "initialDate": today,
     "initialView": "dayGridMonth",
 }
 
