@@ -167,7 +167,8 @@ def addEvent(selectionMethod):
         st.rerun()
         #st.balloons()      #doesnt run after rerun
 
-if state["callback"] != "eventsSet":
+if "callback" in state.keys():
+#if state["callback"] != "eventsSet":
     if state["callback"] == "dateClick":
         addEvent("click")
     elif state["callback"] == "select":
