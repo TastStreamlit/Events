@@ -110,11 +110,15 @@ state = calendar(
         font-weight: 700;
     }
     .fc-toolbar-title {
-        font-size: 2rem;
+        font-size: 1.2rem;
     }
     """,
     key=st.session_state["Calendar"],
 )
+
+#.fc-toolbar-title {
+#    font-size: 2rem;
+#}
 
 #@st.dialog("Miet")
 def addEvent(selectionMethod):
