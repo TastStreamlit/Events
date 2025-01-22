@@ -1,17 +1,27 @@
 import streamlit as st
 from streamlit_calendar import calendar
-import datetime
+from datetime import datetime
 import uuid
 
 #https://bernevents.streamlit.app/                                              #live link
-#https://github.com/TastStreamlit/Events/tree/main                              github link
+#https://github.com/TastStreamlit/Events/tree/main                              #github link
 #https://docs.streamlit.io/develop/api-reference                                #streamlit api
 #https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/         #streamlit emoji shortcodes
 #https://github.com/im-perativa/streamlit-calendar?tab=readme-ov-file           #calendar package
+#https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.js                #locale (go to de (nr. 17)) or just go here: https://github.com/fullcalendar/fullcalendar/blob/3e4ce4c2fcee749eb459c59013f70b3cbd3e5a51/packages/core/src/locales/de.ts#L31
 
-#TODO:  -Login system so other users cant edit already existing events
-#       -Payment system
+#TODO:  
+#       -Logo/Branding (colors)
+#       -Prices (with breakdown like delivery fees)
+#       -Login system so other users cant edit already existing events & faster future bookings
+#       -Secure payment system & insurance? Data protection
 #       -Inform people (send emails)
+#       -Reviews       st.feedback("stars") or st.feedback("thumbs") or st.feedback("faces")
+#       -Include an option for delivery/pick-up of rented equipment?
+#       -Provide customer support and FAQs?
+#       -Contact form? Phone number? Email?
+#       -Terms of service?
+#       -Testing
 
 st.set_page_config(
     page_title="Home",
@@ -21,16 +31,139 @@ st.set_page_config(
 )
 st.logo("https://seeklogo.com/images/K/Kanton_Bern-logo-62EAC80617-seeklogo.com.png")
 
+testEvents = [
+    {
+        "title": "Event 1",
+        "color": "#FF6C6C",
+        "start": "2023-07-03",
+        "end": "2023-07-05",
+        "resourceId": "a",
+    },
+    {
+        "title": "Event 2",
+        "color": "#FFBD45",
+        "start": "2023-07-01",
+        "end": "2023-07-10",
+        "resourceId": "b",
+    },
+    {
+        "title": "Event 3",
+        "color": "#FF4B4B",
+        "start": "2023-07-20",
+        "end": "2023-07-20",
+        "resourceId": "c",
+    },
+    {
+        "title": "Event 4",
+        "color": "#FF6C6C",
+        "start": "2023-07-23",
+        "end": "2023-07-25",
+        "resourceId": "d",
+    },
+    {
+        "title": "Event 5",
+        "color": "#FFBD45",
+        "start": "2023-07-29",
+        "end": "2023-07-30",
+        "resourceId": "e",
+    },
+    {
+        "title": "Event 6",
+        "color": "#FF4B4B",
+        "start": "2023-07-28",
+        "end": "2023-07-20",
+        "resourceId": "f",
+    },
+    {
+        "title": "Event 7",
+        "color": "#FF4B4B",
+        "start": "2023-07-01T08:30:00",
+        "end": "2023-07-01T10:30:00",
+        "resourceId": "a",
+    },
+    {
+        "title": "Event 8",
+        "color": "#3D9DF3",
+        "start": "2023-07-01T07:30:00",
+        "end": "2023-07-01T10:30:00",
+        "resourceId": "b",
+    },
+    {
+        "title": "Event 9",
+        "color": "#3DD56D",
+        "start": "2023-07-02T10:40:00",
+        "end": "2023-07-02T12:30:00",
+        "resourceId": "c",
+    },
+    {
+        "title": "Event 10",
+        "color": "#FF4B4B",
+        "start": "2023-07-15T08:30:00",
+        "end": "2023-07-15T10:30:00",
+        "resourceId": "d",
+    },
+    {
+        "title": "Event 11",
+        "color": "#3DD56D",
+        "start": "2023-07-15T07:30:00",
+        "end": "2023-07-15T10:30:00",
+        "resourceId": "e",
+    },
+    {
+        "title": "Event 12",
+        "color": "#3D9DF3",
+        "start": "2023-07-21T10:40:00",
+        "end": "2023-07-21T12:30:00",
+        "resourceId": "f",
+    },
+    {
+        "title": "Event 13",
+        "color": "#FF4B4B",
+        "start": "2023-07-17T08:30:00",
+        "end": "2023-07-17T10:30:00",
+        "resourceId": "a",
+    },
+    {
+        "title": "Event 14",
+        "color": "#3D9DF3",
+        "start": "2023-07-17T09:30:00",
+        "end": "2023-07-17T11:30:00",
+        "resourceId": "b",
+    },
+    {
+        "title": "Event 15",
+        "color": "#3DD56D",
+        "start": "2023-07-17T10:30:00",
+        "end": "2023-07-17T12:30:00",
+        "resourceId": "c",
+    },
+    {
+        "title": "Event 16",
+        "color": "#FF6C6C",
+        "start": "2023-07-17T13:30:00",
+        "end": "2023-07-17T14:30:00",
+        "resourceId": "d",
+    },
+    {
+        "title": "Event 17",
+        "color": "#FFBD45",
+        "start": "2023-07-17T15:30:00",
+        "end": "2023-07-17T16:30:00",
+        "resourceId": "e",
+    },
+]
+
 #Init session state
 if not st.session_state.get("Calendar", False):
     st.session_state["Calendar"] = str(uuid.uuid4())
 if not st.session_state.get("Events", False):
-    st.session_state["Events"] = []
+    #st.session_state["Events"] = []    #set to empty
+    st.session_state["Events"] = testEvents
 
 # Light/Dark mode toggle button session state
 ms = st.session_state
-if "themes" not in ms: 
-    ms.themes = {"currentTheme": "dark",        
+if "themes" not in st.session_state: 
+    st.session_state.themes = {"currentTheme": "dark",        
         "light": {"theme.base": "dark",
             #"theme.backgroundColor": "black",
             #"theme.primaryColor": "#c98bdb",
@@ -60,40 +193,253 @@ with st.sidebar:
     buttonFace = ms.themes["light"]["buttonFace"] if ms.themes["currentTheme"] == "light" else ms.themes["dark"]["buttonFace"]
     st.button(buttonFace, on_click=changeTheme, help="🌓")
 
-#Vars
-today = str(datetime.date.today())
+def refreshCalendar():
+    st.session_state["Calendar"] = str(uuid.uuid4())
+
+
+def days_past(date_string1, date_string2, date_format="%Y-%m-%d"):
+    """
+    Returns the number of days between two given dates, ignoring the time.
+
+    :param date_string1: The first date string (in the format specified by date_format, possibly with time).
+    :param date_string2: The second date string (in the format specified by date_format, possibly with time).
+    :param date_format: The format in which the date strings are provided. Default is "%d.%m.%Y".
+    :return: The number of days between the two given dates, ignoring time.
+    """
+    # Strip time and timezone information by splitting on "T" and selecting only the date part
+    date_string1 = date_string1.split("T")[0]  # Remove time portion if it exists
+    date_string2 = date_string2.split("T")[0]  # Remove time portion if it exists
+
+    # Convert the input date strings to datetime objects, set time to midnight
+    given_date1 = datetime.strptime(date_string1, date_format).replace(hour=0, minute=0, second=0, microsecond=0)
+    given_date2 = datetime.strptime(date_string2, date_format).replace(hour=0, minute=0, second=0, microsecond=0)
+
+    # Calculate the difference in days
+    delta = given_date2 - given_date1
+    
+    # Return the number of days
+    return delta.days
+
+#---------------------------------------------------------Vars------------------------------------------------------------
+today = str(datetime.today())  #set to today
+#today = "2023-07-01"
 
 mietables = {
-    "Boxe": "blue",
-    "Rouchmaschine": "red",
-    "Rouchmaschine 2": "green"
+    "Boxe (1.- pro Tag)": "blue",
+    "Boxe 2 (5.- pro Tag)": "pink",
+    "Rouchmaschine (10.- pro Tag)": "red",
+    "Rouchmaschine 2 (11.- pro Tag)": "green",
 }
+#Corresponding cost values
+costs = [1, 5, 10, 11]
+mietables_cost = []
+for key, cost in zip(mietables.keys(), costs):
+    mietables_cost.append((key, cost))
+#Convert mietables_cost to a dictionary for faster lookup
+mietables_cost_dict = dict(mietables_cost)
+
+calendar_resources = []
+for key in mietables.keys():
+    #calendar_resources.append({"id": key, "title": key})
+    calendar_resources.append({"id": key, "title": key})
+#calendar_resources = [
+#    {"id": "a", "building": "Building A", "title": "Room A"},
+#    {"id": "b", "building": "Building A", "title": "Room B"},
+#    {"id": "c", "building": "Building B", "title": "Room C"},
+#    {"id": "d", "building": "Building B", "title": "Room D"},
+#    {"id": "e", "building": "Building C", "title": "Room E"},
+#    {"id": "f", "building": "Building C", "title": "Room F"},
+#]
+
+modes = {
+    "daygrid": "Kalender (Tag/Woche/Monat)",
+    "timegrid": "Wochenansicht (Zeit)",
+    "timeline": "Zeitleiste (Tag/Woche/Monat)",
+    "resource-daygrid": "Equipment (Tag)",
+    "resource-timegrid": "Equipment (Zeit)",
+    "resource-timeline": "Equipment (Zeitleiste)",
+    "list": "Liste (Monat)",
+    "multimonth": "Jahr",
+}
+
+#Create a list of tuples (key, value) for the selectbox options
+mode_options = [(key, value) for key, value in modes.items()]
+
+#Selectbox displaying the values, but returning the corresponding key
+#with st.sidebar:
+selected_option = st.selectbox(
+    "Kalender Ansicht:",
+    mode_options,  #The options list contains tuples (key, value)
+    format_func=lambda x: x[1],  #Display the value in the selectbox
+    on_change=lambda: refreshCalendar()  #Callback function when selection changes
+)
+
+#Now you can access both the selected key and value
+#selected_key = selected_option[0]
+selected_value = selected_option[1]
+
+#mode = "daygrid"    #default
+mode = selected_option[0]
 
 events = []
 
-people = [
-    {"id": "a", "title": "Jeff"},
-    {"id": "b", "title": "John"},
-    {"id": "c", "title": "Both"}
-]
-
 calendar_options = {
-    "editable": "true",
+    "editable": "true",         #false      #This determines if the events can be dragged and resized
     "navLinks": "true",
-    "resources": people,
+    "resources": calendar_resources,
     "selectable": "true",
+    "initialDate": today,       #set todays date
+    "firstDay": 1,              #start on monday
+    #"locale": "de-ch",
+    "locale": "de",             #german/deutsch
+    "navLinkHint": 'Zum $0',
 }
 
-calendar_options = {
-    **calendar_options,
-    "headerToolbar": {
-        "left": "today prev,next",
-        "center": "title",
-        "right": "dayGridDay,dayGridWeek,dayGridMonth",
-    },
-    "initialDate": today,
-    "initialView": "dayGridMonth",
-}
+if "resource" in mode:
+    if mode == "resource-daygrid":
+        calendar_options = {
+            **calendar_options,
+            "buttonText": {
+                "today": "Heute",
+            },
+            "buttonHints": {
+                "prev": "Vorheriger",
+                "next": "Nächster",
+                "today": "Heute",
+            },
+            "initialView": "resourceDayGridDay",
+            "resourceGroupField": "title",
+        }
+    elif mode == "resource-timeline":
+        calendar_options = {
+            **calendar_options,
+            "headerToolbar": {
+                "left": "today prev,next",
+                "center": "title",
+                "right": "resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth",
+            },
+            "buttonText": {
+                "today": "Heute",
+                "day": "Tag",
+                "week": "Woche",
+                "month": "Monat",
+                #"list": "Liste",
+            },
+            "buttonHints": {
+                "prev": "Vorheriger",
+                "next": "Nächster",
+                "today": "Heute",
+                "day": "Tag",
+                "week": "Woche",
+                "month": "Monat",
+            },
+            "initialView": "resourceTimelineDay",
+            "resourceGroupField": "title",
+        }
+    elif mode == "resource-timegrid":
+        calendar_options = {
+            **calendar_options,
+            "buttonText": {
+                "today": "Heute",
+            },
+            "buttonHints": {
+                "prev": "Vorheriger",
+                "next": "Nächster",
+                "today": "Heute",
+            },
+            "initialView": "resourceTimeGridDay",
+            "resourceGroupField": "title",
+        }
+else:
+    if mode == "daygrid":
+        calendar_options = {
+            **calendar_options,
+            "headerToolbar": {
+                "left": "today prev,next",
+                "center": "title",
+                "right": "dayGridDay,dayGridWeek,dayGridMonth",
+            },
+            "buttonText": {
+                "today": "Heute",
+                "day": "Tag",
+                "week": "Woche",
+                "month": "Monat",
+                #"list": "Liste",
+            },
+            "buttonHints": {
+                "prev": "Vorheriger",
+                "next": "Nächster",
+                "today": "Heute",
+                "day": "Tag",
+                "week": "Woche",
+                "month": "Monat",
+            },
+            "initialView": "dayGridMonth",
+        }
+    elif mode == "timegrid":
+        calendar_options = {
+            **calendar_options,
+            "buttonText": {
+                "today": "Heute",
+            },
+            "buttonHints": {
+                "prev": "Vorheriger",
+                "next": "Nächster",
+                "today": "Heute",
+            },
+            "initialView": "timeGridWeek",
+        }
+    elif mode == "timeline":
+        calendar_options = {
+            **calendar_options,
+            "headerToolbar": {
+                "left": "today prev,next",
+                "center": "title",
+                "right": "timelineDay,timelineWeek,timelineMonth",
+            },
+            "buttonText": {
+                "today": "Heute",
+                "day": "Tag",
+                "week": "Woche",
+                "month": "Monat",
+                #"list": "Liste",
+            },
+            "buttonHints": {
+                "prev": "Vorheriger",
+                "next": "Nächster",
+                "today": "Heute",
+                "day": "Tag",
+                "week": "Woche",
+                "month": "Monat",
+            },
+            "initialView": "timelineMonth",
+        }
+    elif mode == "list":
+        calendar_options = {
+            **calendar_options,
+            "buttonText": {
+                "today": "Heute",
+            },
+            "buttonHints": {
+                "prev": "Vorheriger",
+                "next": "Nächster",
+                "today": "Heute",
+            },
+            "initialView": "listMonth",
+        }
+    elif mode == "multimonth":
+        calendar_options = {
+            **calendar_options,
+            "buttonText": {
+                "today": "Heute",
+            },
+            "buttonHints": {
+                "prev": "Vorheriger",
+                "next": "Nächster",
+                "today": "Heute",
+            },
+            "initialView": "multiMonthYear",
+        }
 
 #Calendar
 state = calendar(
@@ -110,17 +456,54 @@ state = calendar(
         font-weight: 700;
     }
     .fc-toolbar-title {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
     """,
     key=st.session_state["Calendar"],
 )
 
-#.fc-toolbar-title {
-#    font-size: 2rem;
-#}
+def contains_time(date_string):
+    #Check for the presence of 'T' or ':' (indicates time or timezone)
+    return 'T' in date_string or ':' in date_string or '+' in date_string
 
-#@st.dialog("Miet")
+def formatDate(dateString):
+    #Convert string to datetime object
+    date_obj = datetime.strptime(dateString, "%Y-%m-%dT%H:%M:%S%z") if contains_time(dateString) else datetime.strptime(dateString, "%Y-%m-%d")
+
+    #Format the datetime object to your desired format
+    formatted_date = date_obj.strftime("%d.%m.%Y")
+    formatted_date_with_time = date_obj.strftime("%H:%M")
+
+    return formatted_date, formatted_date_with_time
+
+@st.dialog("Event")
+def showEvent():
+    eventTitle = state["eventClick"]["event"]["title"]
+
+    eventStart = state["eventClick"]["event"]["start"]
+    formattedEventStart, formattedEventStartTime = formatDate(eventStart)
+    startTimeFix = ''
+    endTimeFix = ''
+
+    if contains_time(eventStart):
+        startTimeFix = f"um {formattedEventStartTime}"
+
+    if "end" in state["eventClick"]["event"]:
+        eventEnd = state["eventClick"]["event"]["end"]
+        formattedEventEnd, formattedEventEndTime = formatDate(eventEnd)
+
+        startFix = "vom"
+        endFix = f"bis {formattedEventEnd}"
+
+        if contains_time(eventEnd):
+            endTimeFix = f"um {formattedEventEndTime}"
+    else:
+        startFix = "am"
+        endFix = ''
+
+    st.write(f"{eventTitle} {startFix} {formattedEventStart} {startTimeFix} {endFix} {endTimeFix}")
+
+@st.dialog("Miet")
 def addEvent(selectionMethod):
     #choice = st.radio("How would you like to be contacted?", ("Email", "Home phone", "Mobile phone"))
     choice = st.selectbox("Weles am bestä? (debug)", ["multiselect", "segmented_control", "pills"])
@@ -135,8 +518,9 @@ def addEvent(selectionMethod):
 
     st.info("Selected: " + str(new_mietable))
 
-    t = st.time_input("When?", "now", step=1800)               #datetime.time(8, 45)
-    st.write("At", t)
+    #t = st.time_input("When?", "now", step=1800)               #datetime.time(8, 45)
+    #st.write("At", t)
+    #st.write("Um", )
 
     #if t before today == st.warning("Selected date is in the past")    or st.error
     #else st.info or st.success
@@ -146,9 +530,23 @@ def addEvent(selectionMethod):
         start_date = state["dateClick"]["date"]
         end_date = state["dateClick"]["date"]
     elif selectionMethod == "select":
-        all_day = True
+        all_day = False
         start_date = state["select"]["start"]
         end_date = state["select"]["end"]
+
+    if (mode == "daygrid" or mode == "timeline" or mode == "resource-daygrid" or mode == "multimonth"):
+        all_day = True
+
+    totalcost = 0
+    for m in new_mietable:
+        # Access the cost from the dictionary
+        totalcost += mietables_cost_dict.get(m, None)
+    st.write(f"Kosten pro Tag = {totalcost}")
+
+    if selectionMethod == "click":
+        st.write(f"Kosten total =  {totalcost * 1}")
+    else:
+        st.write(f"Kosten total =  {totalcost * days_past(start_date, end_date)}")
     
     if st.button("Miet!", use_container_width=True):
         i = 0
@@ -160,14 +558,14 @@ def addEvent(selectionMethod):
                 "location": "Bern",
                 "start": start_date,
                 "end": end_date,
-                "resourceId": "a"
+                "resourceId": new_mietable[i]
             }
 
             st.session_state["Events"].append(new_event_desc)
             #st.toast(f"{new_mietable[i]} added", icon='😍') #isnt seen because of rerun right after
             i += 1
 
-        st.session_state["Calendar"] = str(uuid.uuid4())
+        refreshCalendar()
         st.rerun()
         #st.balloons()      #doesnt run after rerun
 
@@ -177,21 +575,37 @@ if "callback" in state.keys():
         addEvent("click")
     elif state["callback"] == "select":
         addEvent("select")
+    elif state["callback"] == "eventClick":
+        showEvent()
+    elif state["callback"] == "eventChange":
+        print("Called after an event has been modified in some way.")            #https://fullcalendar.io/docs/eventChange
+    elif state["callback"] == "eventsSet":
+        print("Called after event data is initialized OR changed in any way.")   #https://fullcalendar.io/docs/eventsSet
 
-with st.expander("About Equipment", icon="🎧"): #🎵🎶🔈🔉🔊
-    st.write("Boxe desc")
+with st.expander("Über das Equipment", icon="🎧"): #🎵🎶🔈🔉🔊
+    st.subheader("Boxe")
+    st.write("A speaker is a device that produces sound. It takes electrical signals and converts them into audible noise, allowing music, voices, or other sounds to be heard from electronic devices. Speakers are commonly found in radios, televisions, and computers, and they can range in size from small portable units to large, high-power systems.")
     st.image(
             "https://cdn.pixabay.com/photo/2019/11/13/10/17/monkey-banana-4623184_640.jpg",
-            caption = "Boxe Image",
-            width = 400,
+            caption = "Boxe Image caption",
+            use_container_width = True,
+            #width = 400,
         )
+    
+    st.write("Review")
+    st.feedback("stars")
+    st.feedback("thumbs")
+    st.feedback("faces")
     st.divider()
 
     st.write("Rouchmaschine desc")
     st.divider()
 
-with st.expander("About Us", icon="🌍"):
-    st.write("Uber uns")
+with st.expander("Über Us", icon="🌍"):
+    st.write("Über uns: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+
+with st.expander("FAQ", icon="🛠️"):
+    st.write("FAQ: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
 
 #DEBUG
 with st.sidebar:
