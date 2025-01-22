@@ -225,15 +225,17 @@ today = str(datetime.today())  #set to today
 #today = "2023-07-01"
 
 mietables = {
-    "Boxe (1.- pro Tag)": "blue",
-    "Subwoofer (2.- pro Tag)": "turquoise",
-    "Mischpult (5.- pro Tag)": "pink",
-    "Näbumaschine (10.- pro Tag)": "red",
-    "Lichteffekte (11.- pro Tag)": "green",
-    "Mikrofon (15.- pro Tag)": "purple",
+    "Boxe 1 (25.- pro Tag)": "red",
+    "Boxe 2 (25.- pro Tag)": "orange",
+    "Subwoofer (50.- pro Tag)": "turquoise",
+    "Mischpult (1.- pro Tag)": "pink",
+    "Näbumaschine (1.- pro Tag)": "blue",
+    "Lichteffekte (1.- pro Tag)": "green",
+    "Mikrofon (1.- pro Tag)": "purple",
+    "Gorilla Bag (25.- pro Tag)": "grey",
 }
 #Corresponding cost values
-costs = [1, 2, 5, 10, 11, 15]
+costs = [25, 25, 50, 1, 1, 1, 1, 25]
 mietables_cost = []
 for key, cost in zip(mietables.keys(), costs):
     mietables_cost.append((key, cost))
