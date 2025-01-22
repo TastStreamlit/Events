@@ -154,13 +154,12 @@ testEvents = [
 ]
 
 #Init session state
-if not st.session_state.get("Calendar", False):
-    st.session_state["Calendar"] = str(uuid.uuid4())
+if not st.session_state.get("Calendar", False): st.session_state["Calendar"] = str(uuid.uuid4())
 if not st.session_state.get("Events", False):
     #st.session_state["Events"] = []    #set to empty
     st.session_state["Events"] = testEvents
 
-# Light/Dark mode toggle button session state
+#Light/Dark mode toggle button session state
 ms = st.session_state
 if "themes" not in st.session_state: 
     st.session_state.themes = {"currentTheme": "dark",        
@@ -179,7 +178,7 @@ if "themes" not in st.session_state:
             "buttonFace": "Light 🌞"}, #🌕
         }
     
-# Change theme from/to light/dark
+#Change theme from/to light/dark
 def changeTheme():
     previousTheme = ms.themes["currentTheme"]
     themeDict = ms.themes["light"] if ms.themes["currentTheme"] == "light" else ms.themes["dark"]
@@ -196,28 +195,17 @@ with st.sidebar:
 def refreshCalendar():
     st.session_state["Calendar"] = str(uuid.uuid4())
 
-
 def days_past(date_string1, date_string2, date_format="%Y-%m-%d"):
-    """
-    Returns the number of days between two given dates, ignoring the time.
+    #Strip time and timezone information by splitting on "T" and selecting only the date part
+    date_string1 = date_string1.split("T")[0]  #Remove time portion if it exists
+    date_string2 = date_string2.split("T")[0]  #Remove time portion if it exists
 
-    :param date_string1: The first date string (in the format specified by date_format, possibly with time).
-    :param date_string2: The second date string (in the format specified by date_format, possibly with time).
-    :param date_format: The format in which the date strings are provided. Default is "%d.%m.%Y".
-    :return: The number of days between the two given dates, ignoring time.
-    """
-    # Strip time and timezone information by splitting on "T" and selecting only the date part
-    date_string1 = date_string1.split("T")[0]  # Remove time portion if it exists
-    date_string2 = date_string2.split("T")[0]  # Remove time portion if it exists
-
-    # Convert the input date strings to datetime objects, set time to midnight
+    #Convert the input date strings to datetime objects, set time to midnight
     given_date1 = datetime.strptime(date_string1, date_format).replace(hour=0, minute=0, second=0, microsecond=0)
     given_date2 = datetime.strptime(date_string2, date_format).replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # Calculate the difference in days
+    #Calculate the difference in days
     delta = given_date2 - given_date1
-    
-    # Return the number of days
     return delta.days
 
 #---------------------------------------------------------Vars------------------------------------------------------------
@@ -225,35 +213,25 @@ today = str(datetime.today())  #set to today
 #today = "2023-07-01"
 
 mietables = {
-    "Lautsprecher 1 (25.- pro Tag)": "red",
-    "Lautsprecher 2 (25.- pro Tag)": "orange",
-    "Subwoofer (50.- pro Tag)": "turquoise",
-    "Mischpult (0.- pro Tag)": "pink",
-    "Näbumaschine (0.- pro Tag)": "blue",
-    "Lichteffekte (0.- pro Tag)": "green",
-    "Mikrofon (0.- pro Tag)": "purple",
-    "Gorilla Bag (25.- pro Tag)": "grey",
+    "Lautsprecher 1 (25.-/Tag)": "red",
+    "Lautsprecher 2 (25.-/Tag)": "orange",
+    "Subwoofer (50.-/Tag)": "turquoise",
+    "Mischpult (0.-/Tag)": "pink",
+    "Näbumaschine (0.-/Tag)": "blue",
+    "Lichteffekte (0.-/Tag)": "green",
+    "Mikrofon (0.-/Tag)": "purple",
+    "Gorilla Bag (25.-/Tag)": "grey",
 }
-#Corresponding cost values
 costs = [25, 25, 50, 0, 0, 0, 0, 25]
+
 mietables_cost = []
 for key, cost in zip(mietables.keys(), costs):
     mietables_cost.append((key, cost))
-#Convert mietables_cost to a dictionary for faster lookup
-mietables_cost_dict = dict(mietables_cost)
+mietables_cost_dict = dict(mietables_cost)  #Convert mietables_cost to a dictionary for faster lookup
 
 calendar_resources = []
 for key in mietables.keys():
-    #calendar_resources.append({"id": key, "title": key})
     calendar_resources.append({"id": key, "title": key})
-#calendar_resources = [
-#    {"id": "a", "building": "Building A", "title": "Room A"},
-#    {"id": "b", "building": "Building A", "title": "Room B"},
-#    {"id": "c", "building": "Building B", "title": "Room C"},
-#    {"id": "d", "building": "Building B", "title": "Room D"},
-#    {"id": "e", "building": "Building C", "title": "Room E"},
-#    {"id": "f", "building": "Building C", "title": "Room F"},
-#]
 
 modes = {
     "daygrid": "Kalender (Tag/Woche/Monat)",
@@ -265,7 +243,6 @@ modes = {
     "list": "Liste (Monat)",
     "multimonth": "Jahr",
 }
-
 #Create a list of tuples (key, value) for the selectbox options
 mode_options = [(key, value) for key, value in modes.items()]
 
@@ -278,35 +255,17 @@ selected_option = st.selectbox(
     on_change=lambda: refreshCalendar()  #Callback function when selection changes
 )
 
-#Now you can access both the selected key and value
-#selected_key = selected_option[0]
-selected_value = selected_option[1]
-
 #mode = "daygrid"    #default
 mode = selected_option[0]
 
 events = []
 
-calendar_options = {
-    "editable": "true",         #false      #This determines if the events can be dragged and resized
-    "navLinks": "false",
-    "resources": calendar_resources,
-    "selectable": "true",
-    "initialDate": today,       #set todays date
-    "firstDay": 1,              #start on monday
-    #"locale": "de-ch",
-    "locale": "de",             #german/deutsch
-    "navLinkHint": 'Zum $0',
-    "allDayText": "Ganzer Tag"
-}
-
-button_options = {
+button_options = {  #"list": "Liste",
     "buttonText": {
         "today": "Heute",
         "day": "Tag",
         "week": "Woche",
         "month": "Monat",
-        #"list": "Liste",
     },
     "buttonHints": {
         "prev": "Vorheriger",
@@ -316,6 +275,19 @@ button_options = {
         "week": "Woche",
         "month": "Monat",
     },
+}
+
+calendar_options = {
+    "editable": "true",         #false      #This determines if the events can be dragged and resized
+    "navLinks": "false",
+    "resources": calendar_resources,
+    "selectable": "true",
+    "initialDate": today,       #set todays date
+    "firstDay": 1,              #start on monday
+    "locale": "de",             #german/deutsch
+    "navLinkHint": 'Zum $0',
+    "allDayText": "Ganzer Tag",
+    **button_options
 }
 
 header_toolbar = {
@@ -330,21 +302,18 @@ if "resource" in mode:
     if mode == "resource-daygrid":
         calendar_options = {
             **calendar_options,
-            **button_options,
             "initialView": "resourceDayGridDay",
             "resourceGroupField": "title",
         }
     elif mode == "resource-timeline":
         calendar_options = {
             **calendar_options,
-            **button_options,
             "initialView": "resourceTimelineDay",
             "resourceGroupField": "title",
         }
     elif mode == "resource-timegrid":
         calendar_options = {
             **calendar_options,
-            **button_options,
             **header_toolbar,
             "initialView": "resourceTimeGridDay",
             "resourceGroupField": "title",
@@ -353,33 +322,28 @@ else:
     if mode == "daygrid":
         calendar_options = {
             **calendar_options,
-            **button_options,
             **header_toolbar,
             "initialView": "dayGridMonth",
         }
     elif mode == "timegrid":
         calendar_options = {
             **calendar_options,
-            **button_options,
             "initialView": "timeGridWeek",
         }
     elif mode == "timeline":
         calendar_options = {
             **calendar_options,
-            **button_options,
             **header_toolbar,
             "initialView": "timelineMonth",
         }
     elif mode == "list":
         calendar_options = {
             **calendar_options,
-            **button_options,
             "initialView": "listMonth",
         }
     elif mode == "multimonth":
         calendar_options = {
             **calendar_options,
-            **button_options,
             "initialView": "multiMonthYear",
         }
 
@@ -388,37 +352,34 @@ state = calendar(
     events=st.session_state["Events"],
     options=calendar_options,
     custom_css="""
-    .fc-event-past {
-        opacity: 0.8;
-    }
-    .fc-event-time {
-        font-style: italic;
-    }
-    .fc-event-title {
-        font-weight: 700;
-    }
-    .fc-toolbar-title {
-        font-size: 1rem;
-    }
-    .fc-today-button, .fc-next-button, .fc-prev-button, .fc-dayGridDay-button, .fc-dayGridWeek-button, .fc-dayGridMonth-button, fc-resourceTimelineDay-button, fc-resourceTimelineWeek-button, fc-resourceTimelineMonth-button {
-        font-size: 12px;
-    }
+        .fc-event-past {
+            opacity: 0.8;
+        }
+        .fc-event-time {
+            font-style: italic;
+        }
+        .fc-event-title {
+            font-weight: 700;
+        }
+        .fc-toolbar-title {
+            font-size: 1rem;
+        }
+        .fc-today-button, .fc-next-button, .fc-prev-button, .fc-dayGridDay-button, .fc-dayGridWeek-button, .fc-dayGridMonth-button, .fc-resourceTimelineDay-button, .fc-resourceTimelineWeek-button, .fc-resourceTimelineMonth-button {
+            font-size: 12px;
+        }
     """,
     key=st.session_state["Calendar"],
 )
 
 def contains_time(date_string):
-    #Check for the presence of 'T' or ':' (indicates time or timezone)
-    return 'T' in date_string or ':' in date_string or '+' in date_string
+    return 'T' in date_string or ':' in date_string or '+' in date_string #Check for the presence of 'T' or ':' (indicates time or timezone)
 
 def formatDate(dateString):
-    #Convert string to datetime object
-    date_obj = datetime.strptime(dateString, "%Y-%m-%dT%H:%M:%S%z") if contains_time(dateString) else datetime.strptime(dateString, "%Y-%m-%d")
+    date_obj = datetime.strptime(dateString, "%Y-%m-%dT%H:%M:%S%z") if contains_time(dateString) else datetime.strptime(dateString, "%Y-%m-%d") #Convert string to datetime object
 
     #Format the datetime object to your desired format
     formatted_date = date_obj.strftime("%d.%m.%Y")
     formatted_date_with_time = date_obj.strftime("%H:%M")
-
     return formatted_date, formatted_date_with_time
 
 @st.dialog("Event")
@@ -430,8 +391,7 @@ def showEvent():
     startTimeFix = ''
     endTimeFix = ''
 
-    if contains_time(eventStart):
-        startTimeFix = f"um {formattedEventStartTime}"
+    if contains_time(eventStart): startTimeFix = f"um {formattedEventStartTime}"
 
     if "end" in state["eventClick"]["event"]:
         eventEnd = state["eventClick"]["event"]["end"]
@@ -440,8 +400,7 @@ def showEvent():
         startFix = "vom"
         endFix = f"bis {formattedEventEnd}"
 
-        if contains_time(eventEnd):
-            endTimeFix = f"um {formattedEventEndTime}"
+        if contains_time(eventEnd): endTimeFix = f"um {formattedEventEndTime}"
     else:
         startFix = "am"
         endFix = ''
@@ -450,25 +409,19 @@ def showEvent():
 
 @st.dialog("Miet")
 def addEvent(selectionMethod):
-    #choice = st.radio("How would you like to be contacted?", ("Email", "Home phone", "Mobile phone"))
-    choice = st.selectbox("Weles am bestä? (debug)", ["multiselect", "segmented_control", "pills"])
-    st.divider()
+    choice = st.selectbox("Weles am bestä? (FEEDBACK BITTE)", ["multiselect", "segmented_control", "pills"])
 
-    if choice == "multiselect":
-        new_mietable = st.multiselect("Equipment", mietables)
-    elif choice == "segmented_control":
-        new_mietable = st.segmented_control("Equipment", mietables, selection_mode="multi")
-    elif choice == "pills":
-        new_mietable = st.pills("Equipment", mietables, selection_mode="multi")
+    if choice == "multiselect": new_mietable = st.multiselect("Equipment", mietables)
+    elif choice == "segmented_control": new_mietable = st.segmented_control("Equipment", mietables, selection_mode="multi")
+    elif choice == "pills": new_mietable = st.pills("Equipment", mietables, selection_mode="multi")
 
     #st.info("Selected: " + str(new_mietable))
 
     #t = st.time_input("When?", "now", step=1800)               #datetime.time(8, 45)
-    #st.write("At", t)
-    #st.write("Um", )
+    #st.write("Um", t)
 
+    #Check if date in the past
     #if t before today == st.warning("Selected date is in the past")    or st.error
-    #else st.info or st.success
 
     if selectionMethod == "click":
         all_day = True
@@ -479,20 +432,20 @@ def addEvent(selectionMethod):
         start_date = state["select"]["start"]
         end_date = state["select"]["end"]
 
-    if (mode == "daygrid" or mode == "timeline" or mode == "resource-daygrid" or mode == "multimonth"):
-        all_day = True
+    if (mode == "daygrid" or mode == "timeline" or mode == "resource-daygrid" or mode == "multimonth"): all_day = True
 
     totalcost = 0
     for m in new_mietable:
-        # Access the cost from the dictionary
+        #Access the cost from the dictionary
         totalcost += mietables_cost_dict.get(m, None)
-    st.info(f"Kosten pro Tag = {totalcost}")
 
-    if selectionMethod == "click":
-        st.info(f"Kosten total =  {totalcost * 1}")
-    else:
-        st.info(f"Kosten total =  {totalcost * days_past(start_date, end_date)}")
-    
+    cost_col1, cost_col2 = st.columns(2)
+    with cost_col1:
+        st.info(f"Kosten/Tag = {totalcost}.-")
+    with cost_col2:
+        if selectionMethod == "click": st.info(f"Kosten total =  {totalcost * 1}.-")
+        else: st.info(f"Kosten total =  {totalcost * days_past(start_date, end_date)}.-")
+
     if st.button("Miet!", use_container_width=True):
         i = 0
         for new_m in new_mietable:
@@ -512,20 +465,14 @@ def addEvent(selectionMethod):
 
         refreshCalendar()
         st.rerun()
-        #st.balloons()      #doesnt run after rerun
 
 if "callback" in state.keys():
 #if state["callback"] != "eventsSet":
-    if state["callback"] == "dateClick":
-        addEvent("click")
-    elif state["callback"] == "select":
-        addEvent("select")
-    elif state["callback"] == "eventClick":
-        showEvent()
-    elif state["callback"] == "eventChange":
-        print("Called after an event has been modified in some way.")            #https://fullcalendar.io/docs/eventChange
-    elif state["callback"] == "eventsSet":
-        print("Called after event data is initialized OR changed in any way.")   #https://fullcalendar.io/docs/eventsSet
+    if state["callback"] == "dateClick": addEvent("click")
+    elif state["callback"] == "select": addEvent("select")
+    elif state["callback"] == "eventClick": showEvent()
+    elif state["callback"] == "eventChange": print("Called after an event has been modified in some way.")            #https://fullcalendar.io/docs/eventChange
+    elif state["callback"] == "eventsSet": print("Called after event data is initialized OR changed in any way.")   #https://fullcalendar.io/docs/eventsSet
 
 with st.expander("Über das Equipment", icon="🎧"): #🎵🎶🔈🔉🔊
     containerBorder = True
@@ -534,8 +481,7 @@ with st.expander("Über das Equipment", icon="🎧"): #🎵🎶🔈🔉🔊
     with st.container(border=containerBorder):
         st.subheader('Lautsprecher', divider=containerDivider) 
         st.write("""2x Turbosound IX12""")
-        st.image(
-            "https://cdn.pixabay.com/photo/2019/11/13/10/17/monkey-banana-4623184_640.jpg",
+        st.image("https://cdn.pixabay.com/photo/2019/11/13/10/17/monkey-banana-4623184_640.jpg",
             caption = "Lautsprecher caption",
             use_container_width = True,
             #width = 400,
@@ -544,8 +490,8 @@ with st.expander("Über das Equipment", icon="🎧"): #🎵🎶🔈🔉🔊
         st.write("Review")
         col1, col2, col3 = st.columns(3)
         with col1: st.feedback("stars")
-        with col3: st.feedback("faces")
-        with col2: st.feedback("thumbs")
+        with col2: st.feedback("faces")
+        with col3: st.feedback("thumbs")
     
     with st.container(border=containerBorder):
         st.subheader('Subwoofer', divider=containerDivider) 
@@ -586,13 +532,14 @@ with st.expander("FAQ", icon="🛠️"):
 #DEBUG
 with st.sidebar:
     st.divider()
-    st.write("DEBUG")
+    st.write("---DEBUG---")
 
-    st.write("State")
+    st.write("Calendar state:")
     st.write(state)
 
-    st.write("SESSION_EVENTS " + str(st.session_state["Events"]))
+    st.write("Session events:")
+    st.write(st.session_state["Events"])
 
     st.divider()
-    st.write("TEST")
-    color = st.color_picker("Pick A Color", "#00f900")
+    st.write("---TEST---")
+    colorpicker = st.color_picker("Pick A Color", "#00f900")
