@@ -364,6 +364,9 @@ state = calendar(
         .fc-toolbar-title {
             font-size: 1rem;
         }
+        .fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
+            margin-left: 0;
+        }
         .fc-today-button, .fc-next-button, .fc-prev-button, .fc-dayGridDay-button, .fc-dayGridWeek-button, .fc-dayGridMonth-button, .fc-resourceTimelineDay-button, .fc-resourceTimelineWeek-button, .fc-resourceTimelineMonth-button {
             font-size: 12px;
         }
