@@ -279,7 +279,7 @@ button_options = {  #"list": "Liste",
 
 calendar_options = {
     "editable": "true",         #false      #This determines if the events can be dragged and resized
-    "navLinks": "false",
+    "navLinks": "true",
     "resources": calendar_resources,
     "selectable": "true",
     "initialDate": today,       #set todays date
@@ -288,14 +288,6 @@ calendar_options = {
     "navLinkHint": 'Zum $0',
     "allDayText": "Ganzer Tag",
     **button_options
-}
-
-header_toolbar = {
-    "headerToolbar": {
-        "left": "today prev,next",
-        "center": "title",
-        "right": "resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth",
-    },
 }
 
 if "resource" in mode:
@@ -308,13 +300,17 @@ if "resource" in mode:
     elif mode == "resource-timeline":
         calendar_options = {
             **calendar_options,
+            "headerToolbar": {
+                "left": "today prev,next",
+                "center": "title",
+                "right": "resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth",
+            },
             "initialView": "resourceTimelineDay",
             "resourceGroupField": "title",
         }
     elif mode == "resource-timegrid":
         calendar_options = {
             **calendar_options,
-            **header_toolbar,
             "initialView": "resourceTimeGridDay",
             "resourceGroupField": "title",
         }
@@ -322,7 +318,11 @@ else:
     if mode == "daygrid":
         calendar_options = {
             **calendar_options,
-            **header_toolbar,
+            "headerToolbar": {
+                "left": "today prev,next",
+                "center": "title",
+                "right": "dayGridDay,dayGridWeek,dayGridMonth",
+            },
             "initialView": "dayGridMonth",
         }
     elif mode == "timegrid":
@@ -333,7 +333,11 @@ else:
     elif mode == "timeline":
         calendar_options = {
             **calendar_options,
-            **header_toolbar,
+            "headerToolbar": {
+                "left": "today prev,next",
+                "center": "title",
+                "right": "timelineDay,timelineWeek,timelineMonth",
+            },
             "initialView": "timelineMonth",
         }
     elif mode == "list":
