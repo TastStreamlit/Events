@@ -531,7 +531,7 @@ with st.expander("Über das Equipment", icon="🎧"): #🎵🎶🔈🔉🔊
     
     with st.container(border=containerBorder):
         st.subheader('Boxe', divider=containerDivider) 
-        st.write("""A speaker is a device that produces sound. It takes electrical signals and converts them into audible noise, allowing music, voices, or other sounds to be heard from electronic devices. Speakers are commonly found in radios, televisions, and computers, and they can range in size from small portable units to large, high-power systems.""")
+        st.write("""2x Turbosound IX12""")
         st.image(
             "https://cdn.pixabay.com/photo/2019/11/13/10/17/monkey-banana-4623184_640.jpg",
             caption = "Boxe Image caption",
