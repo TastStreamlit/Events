@@ -371,6 +371,9 @@ state = calendar(
         .fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
             margin-left: 0;
         }
+        .fc-day-past {
+            background-color:Gray;
+        }
         .fc-today-button, .fc-next-button, .fc-prev-button, .fc-dayGridDay-button, .fc-dayGridWeek-button, .fc-dayGridMonth-button, .fc-resourceTimelineDay-button, .fc-resourceTimelineWeek-button, .fc-resourceTimelineMonth-button {
             font-size: 12px;
         }
@@ -427,9 +430,6 @@ def addEvent(selectionMethod):
     #t = st.time_input("When?", "now", step=1800)               #datetime.time(8, 45)
     #st.write("Um", t)
 
-    #Check if date in the past
-    #if t before today == st.warning("Selected date is in the past")    or st.error
-
     if selectionMethod == "click":
         all_day = True
         start_date = state["dateClick"]["date"]
@@ -448,12 +448,19 @@ def addEvent(selectionMethod):
 
     cost_col1, cost_col2 = st.columns(2)
     with cost_col1:
-        st.info(f"Kosten/Tag = {totalcost}.-")
+        st.warning(f"Kosten/Tag = {totalcost}.-")
     with cost_col2:
         if selectionMethod == "click": st.info(f"Kosten total =  {totalcost * 1}.-")
         else: st.info(f"Kosten total =  {totalcost * days_past(start_date, end_date)}.-")
 
-    if st.button("Miet!", use_container_width=True):
+    #Check if date in the past
+    date_in_past = False
+    if days_past(str(datetime.now())[:10], start_date) < 0:
+        st.error("Start date cannot be in the past.")     #or st.warning
+        date_in_past = True
+    #if t before today == st.warning("Selected date is in the past")    or st.error
+
+    if st.button("Miet!", use_container_width=True, disabled=date_in_past):
         i = 0
         for new_m in new_mietable:
             new_event_desc = {
@@ -535,6 +542,15 @@ with st.expander("Über Us", icon="🌍"):
 
 with st.expander("FAQ", icon="🛠️"):
     st.write("FAQ: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+
+select_text = "Wähle eine oder mehrere Optionen"
+multi_css=f'''
+<style>
+.stMultiSelect div div div div div:nth-of-type(2) {{visibility: hidden;}}
+.stMultiSelect div div div div div:nth-of-type(2)::before {{visibility: visible; content:"{select_text}";}}
+</style>
+'''
+st.markdown(multi_css, unsafe_allow_html=True)
 
 #DEBUG
 with st.sidebar:
