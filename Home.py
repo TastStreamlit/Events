@@ -226,12 +226,14 @@ today = str(datetime.today())  #set to today
 
 mietables = {
     "Boxe (1.- pro Tag)": "blue",
-    "Boxe 2 (5.- pro Tag)": "pink",
-    "Rouchmaschine (10.- pro Tag)": "red",
-    "Rouchmaschine 2 (11.- pro Tag)": "green",
+    "Subwoofer (2.- pro Tag)": "turquoise",
+    "Mischpult (5.- pro Tag)": "pink",
+    "Näbumaschine (10.- pro Tag)": "red",
+    "Lichteffekte (11.- pro Tag)": "green",
+    "Mikrofon (15.- pro Tag)": "purple",
 }
 #Corresponding cost values
-costs = [1, 5, 10, 11]
+costs = [1, 2, 5, 10, 11, 15]
 mietables_cost = []
 for key, cost in zip(mietables.keys(), costs):
     mietables_cost.append((key, cost))
@@ -293,60 +295,55 @@ calendar_options = {
     #"locale": "de-ch",
     "locale": "de",             #german/deutsch
     "navLinkHint": 'Zum $0',
+    "allDayText": "Ganzer Tag"
+}
+
+button_options = {
+    "buttonText": {
+        "today": "Heute",
+        "day": "Tag",
+        "week": "Woche",
+        "month": "Monat",
+        #"list": "Liste",
+    },
+    "buttonHints": {
+        "prev": "Vorheriger",
+        "next": "Nächster",
+        "today": "Heute",
+        "day": "Tag",
+        "week": "Woche",
+        "month": "Monat",
+    },
+}
+
+header_toolbar = {
+    "headerToolbar": {
+        "left": "today prev,next",
+        "center": "title",
+        "right": "resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth",
+    },
 }
 
 if "resource" in mode:
     if mode == "resource-daygrid":
         calendar_options = {
             **calendar_options,
-            "buttonText": {
-                "today": "Heute",
-            },
-            "buttonHints": {
-                "prev": "Vorheriger",
-                "next": "Nächster",
-                "today": "Heute",
-            },
+            **button_options,
             "initialView": "resourceDayGridDay",
             "resourceGroupField": "title",
         }
     elif mode == "resource-timeline":
         calendar_options = {
             **calendar_options,
-            "headerToolbar": {
-                "left": "today prev,next",
-                "center": "title",
-                "right": "resourceTimelineDay,resourceTimelineWeek,resourceTimelineMonth",
-            },
-            "buttonText": {
-                "today": "Heute",
-                "day": "Tag",
-                "week": "Woche",
-                "month": "Monat",
-                #"list": "Liste",
-            },
-            "buttonHints": {
-                "prev": "Vorheriger",
-                "next": "Nächster",
-                "today": "Heute",
-                "day": "Tag",
-                "week": "Woche",
-                "month": "Monat",
-            },
+            **button_options,
             "initialView": "resourceTimelineDay",
             "resourceGroupField": "title",
         }
     elif mode == "resource-timegrid":
         calendar_options = {
             **calendar_options,
-            "buttonText": {
-                "today": "Heute",
-            },
-            "buttonHints": {
-                "prev": "Vorheriger",
-                "next": "Nächster",
-                "today": "Heute",
-            },
+            **button_options,
+            **header_toolbar,
             "initialView": "resourceTimeGridDay",
             "resourceGroupField": "title",
         }
@@ -354,90 +351,33 @@ else:
     if mode == "daygrid":
         calendar_options = {
             **calendar_options,
-            "headerToolbar": {
-                "left": "today prev,next",
-                "center": "title",
-                "right": "dayGridDay,dayGridWeek,dayGridMonth",
-            },
-            "buttonText": {
-                "today": "Heute",
-                "day": "Tag",
-                "week": "Woche",
-                "month": "Monat",
-                #"list": "Liste",
-            },
-            "buttonHints": {
-                "prev": "Vorheriger",
-                "next": "Nächster",
-                "today": "Heute",
-                "day": "Tag",
-                "week": "Woche",
-                "month": "Monat",
-            },
+            **button_options,
+            **header_toolbar,
             "initialView": "dayGridMonth",
         }
     elif mode == "timegrid":
         calendar_options = {
             **calendar_options,
-            "buttonText": {
-                "today": "Heute",
-            },
-            "buttonHints": {
-                "prev": "Vorheriger",
-                "next": "Nächster",
-                "today": "Heute",
-            },
+            **button_options,
             "initialView": "timeGridWeek",
         }
     elif mode == "timeline":
         calendar_options = {
             **calendar_options,
-            "headerToolbar": {
-                "left": "today prev,next",
-                "center": "title",
-                "right": "timelineDay,timelineWeek,timelineMonth",
-            },
-            "buttonText": {
-                "today": "Heute",
-                "day": "Tag",
-                "week": "Woche",
-                "month": "Monat",
-                #"list": "Liste",
-            },
-            "buttonHints": {
-                "prev": "Vorheriger",
-                "next": "Nächster",
-                "today": "Heute",
-                "day": "Tag",
-                "week": "Woche",
-                "month": "Monat",
-            },
+            **button_options,
+            **header_toolbar,
             "initialView": "timelineMonth",
         }
     elif mode == "list":
         calendar_options = {
             **calendar_options,
-            "buttonText": {
-                "today": "Heute",
-            },
-            "buttonHints": {
-                "prev": "Vorheriger",
-                "next": "Nächster",
-                "today": "Heute",
-            },
+            **button_options,
             "initialView": "listMonth",
         }
     elif mode == "multimonth":
         calendar_options = {
             **calendar_options,
-            "buttonText": {
-                "today": "Heute",
-            },
-            "buttonHints": {
-                "prev": "Vorheriger",
-                "next": "Nächster",
-                "today": "Heute",
-            },
+            **button_options,
             "initialView": "multiMonthYear",
         }
 
@@ -458,7 +398,7 @@ state = calendar(
     .fc-toolbar-title {
         font-size: 1rem;
     }
-    .fc-today-button, .fc-next-button, .fc-prev-button, .fc-dayGridDay-button, .fc-dayGridWeek-button, .fc-dayGridMonth-button {
+    .fc-today-button, .fc-next-button, .fc-prev-button, .fc-dayGridDay-button, .fc-dayGridWeek-button, .fc-dayGridMonth-button, fc-resourceTimelineDay-button, fc-resourceTimelineWeek-button, fc-resourceTimelineMonth-button {
         font-size: 12px;
     }
     """,
@@ -586,26 +526,57 @@ if "callback" in state.keys():
         print("Called after event data is initialized OR changed in any way.")   #https://fullcalendar.io/docs/eventsSet
 
 with st.expander("Über das Equipment", icon="🎧"): #🎵🎶🔈🔉🔊
-    st.subheader("Boxe")
-    st.write("A speaker is a device that produces sound. It takes electrical signals and converts them into audible noise, allowing music, voices, or other sounds to be heard from electronic devices. Speakers are commonly found in radios, televisions, and computers, and they can range in size from small portable units to large, high-power systems.")
-    st.image(
+    containerBorder = True
+    containerDivider = True
+    
+    with st.container(border=containerBorder):
+        st.subheader('Boxe', divider=containerDivider) 
+        st.write("""A speaker is a device that produces sound. It takes electrical signals and converts them into audible noise, allowing music, voices, or other sounds to be heard from electronic devices. Speakers are commonly found in radios, televisions, and computers, and they can range in size from small portable units to large, high-power systems.""")
+        st.image(
             "https://cdn.pixabay.com/photo/2019/11/13/10/17/monkey-banana-4623184_640.jpg",
             caption = "Boxe Image caption",
             use_container_width = True,
             #width = 400,
         )
-    
-    st.write("Review")
-    st.feedback("stars")
-    st.feedback("thumbs")
-    st.feedback("faces")
-    st.divider()
 
-    st.write("Rouchmaschine desc")
-    st.divider()
+        st.write("Review")
+        col1, col2, col3 = st.columns(3)
+        with col1: st.feedback("stars")
+        with col3: st.feedback("faces")
+        with col2: st.feedback("thumbs")
+    
+    with st.container(border=containerBorder):
+        st.subheader('Subwoofer', divider=containerDivider) 
+        st.write("""Turbosound IP15B""")
+
+    with st.container(border=containerBorder):
+        st.subheader('Näbumaschine', divider=containerDivider) 
+        st.write("""Näbumaschine BeamZ I1500W
+- Fernbedienigskabu 3m
+- Stromkabu T13 – C13             
+- Fluid: BeamZ Super-Density Blue 5L
+    """)
+
+    with st.container(border=containerBorder):
+        st.subheader('Lichteffekte', divider=containerDivider) 
+        st.write("""Derby - Cameo Superfly XS
+- Fernbedienig
+- Stromkabu T13 – C13
+- Bedienigsaleitig
+- 2x LED Spots
+- 2x Party Liechtli
+    """)
+        
+    with st.container(border=containerBorder):
+        st.subheader('Mikrofon', divider=containerDivider) 
+        st.write("""Mikrofon Shure BG 1.1 mit Hülle""")
+    
+    with st.container(border=containerBorder):
+        st.subheader('Mischpult', divider=containerDivider) 
+        st.write("""Behringer Xenyx Q502USB""")
 
 with st.expander("Über Us", icon="🌍"):
-    st.write("Über uns: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+    st.write("hei mir vermiete boxe und equipment, damit o du chasch choschtegünschtig di event ufd bei steue")
 
 with st.expander("FAQ", icon="🛠️"):
     st.write("FAQ: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
