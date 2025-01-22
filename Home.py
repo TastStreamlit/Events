@@ -225,17 +225,17 @@ today = str(datetime.today())  #set to today
 #today = "2023-07-01"
 
 mietables = {
-    "Boxe 1 (25.- pro Tag)": "red",
-    "Boxe 2 (25.- pro Tag)": "orange",
+    "Lautsprecher 1 (25.- pro Tag)": "red",
+    "Lautsprecher 2 (25.- pro Tag)": "orange",
     "Subwoofer (50.- pro Tag)": "turquoise",
-    "Mischpult (1.- pro Tag)": "pink",
-    "Näbumaschine (1.- pro Tag)": "blue",
-    "Lichteffekte (1.- pro Tag)": "green",
-    "Mikrofon (1.- pro Tag)": "purple",
+    "Mischpult (0.- pro Tag)": "pink",
+    "Näbumaschine (0.- pro Tag)": "blue",
+    "Lichteffekte (0.- pro Tag)": "green",
+    "Mikrofon (0.- pro Tag)": "purple",
     "Gorilla Bag (25.- pro Tag)": "grey",
 }
 #Corresponding cost values
-costs = [25, 25, 50, 1, 1, 1, 1, 25]
+costs = [25, 25, 50, 0, 0, 0, 0, 25]
 mietables_cost = []
 for key, cost in zip(mietables.keys(), costs):
     mietables_cost.append((key, cost))
@@ -461,7 +461,7 @@ def addEvent(selectionMethod):
     elif choice == "pills":
         new_mietable = st.pills("Equipment", mietables, selection_mode="multi")
 
-    st.info("Selected: " + str(new_mietable))
+    #st.info("Selected: " + str(new_mietable))
 
     #t = st.time_input("When?", "now", step=1800)               #datetime.time(8, 45)
     #st.write("At", t)
@@ -486,12 +486,12 @@ def addEvent(selectionMethod):
     for m in new_mietable:
         # Access the cost from the dictionary
         totalcost += mietables_cost_dict.get(m, None)
-    st.write(f"Kosten pro Tag = {totalcost}")
+    st.info(f"Kosten pro Tag = {totalcost}")
 
     if selectionMethod == "click":
-        st.write(f"Kosten total =  {totalcost * 1}")
+        st.info(f"Kosten total =  {totalcost * 1}")
     else:
-        st.write(f"Kosten total =  {totalcost * days_past(start_date, end_date)}")
+        st.info(f"Kosten total =  {totalcost * days_past(start_date, end_date)}")
     
     if st.button("Miet!", use_container_width=True):
         i = 0
@@ -532,11 +532,11 @@ with st.expander("Über das Equipment", icon="🎧"): #🎵🎶🔈🔉🔊
     containerDivider = True
     
     with st.container(border=containerBorder):
-        st.subheader('Boxe', divider=containerDivider) 
+        st.subheader('Lautsprecher', divider=containerDivider) 
         st.write("""2x Turbosound IX12""")
         st.image(
             "https://cdn.pixabay.com/photo/2019/11/13/10/17/monkey-banana-4623184_640.jpg",
-            caption = "Boxe Image caption",
+            caption = "Lautsprecher caption",
             use_container_width = True,
             #width = 400,
         )
