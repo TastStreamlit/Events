@@ -285,7 +285,7 @@ events = []
 
 calendar_options = {
     "editable": "true",         #false      #This determines if the events can be dragged and resized
-    "navLinks": "true",
+    "navLinks": "false",
     "resources": calendar_resources,
     "selectable": "true",
     "initialDate": today,       #set todays date
@@ -457,6 +457,9 @@ state = calendar(
     }
     .fc-toolbar-title {
         font-size: 1rem;
+    }
+    .fc-today-button, .fc-next-button, .fc-prev-button, .fc-dayGridDay-button, .fc-dayGridWeek-button, .fc-dayGridMonth-button {
+        font-size: 12px;
     }
     """,
     key=st.session_state["Calendar"],
